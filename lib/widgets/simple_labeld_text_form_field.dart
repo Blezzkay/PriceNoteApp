@@ -12,6 +12,7 @@ class SimpleLabeledTextFormField extends StatelessWidget {
   final bool obscureText;
   final TextInputType keyboardType;
   final String hintText;
+  final bool isMultiline; // NEW
 
   const SimpleLabeledTextFormField({
     super.key,
@@ -22,6 +23,7 @@ class SimpleLabeledTextFormField extends StatelessWidget {
     this.obscureText = false,
     this.keyboardType = TextInputType.text,
     this.hintText = '',
+    this.isMultiline = false, // default false
   });
 
   @override
@@ -32,13 +34,15 @@ class SimpleLabeledTextFormField extends StatelessWidget {
       controller: controller,
       validator: validator,
       obscureText: obscureText,
-      keyboardType: keyboardType,
+      keyboardType: isMultiline ? TextInputType.multiline : keyboardType,
       hintText: hintText,
       labelColor: textDarkColor,
       borderColor: borderLineColor,
       activeBorderColor: borderLineActiveColor,
       borderRadius: textFieldBorderRadius,
       fontFamily: figtreeFontMedium,
+      maxLines: isMultiline ? null : 1, // NEW
+      textInputAction: isMultiline ? TextInputAction.newline : TextInputAction.done, // NEW
     );
   }
 }

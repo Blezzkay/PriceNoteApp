@@ -6,6 +6,7 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 import '../constants/colors.dart';
 import '../constants/fonts.dart';
 import 'exchange_screen.dart';
+import 'my_projects_screen.dart';
 import 'price_home_screen.dart';
 
 class MainHomeScreen extends StatelessWidget {
@@ -52,7 +53,8 @@ class MainHomeScreen extends StatelessWidget {
 
               // 💰 Price Mode Card
               GestureDetector(
-                onTap: () => Get.to(() => const PriceHomeScreen()),
+                // onTap: () => Get.to(() => const PriceHomeScreen()),
+                onTap: () => Get.to(() =>  MyProjectsScreen()),
                 child: Container(
                   width: double.infinity,
                   padding: EdgeInsets.symmetric(vertical: 4.h, horizontal: 3.w),

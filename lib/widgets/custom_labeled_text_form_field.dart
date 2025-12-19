@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:quote_rate/constants/fonts.dart';
 
 import '../constants/sizes.dart';
 
@@ -15,6 +16,8 @@ class CustomLabeledTextFormField extends StatelessWidget {
   final Color activeBorderColor;
   final double borderRadius;
   final String fontFamily;
+  final int? maxLines; // NEW
+  final TextInputAction? textInputAction; // NEW
 
   const CustomLabeledTextFormField({
     super.key,
@@ -30,6 +33,8 @@ class CustomLabeledTextFormField extends StatelessWidget {
     required this.activeBorderColor,
     required this.borderRadius,
     required this.fontFamily,
+    this.maxLines = 1, // default 1 line
+    this.textInputAction,
   });
 
   @override
@@ -53,8 +58,15 @@ class CustomLabeledTextFormField extends StatelessWidget {
             obscureText: obscureText,
             validator: validator,
             keyboardType: keyboardType,
+            maxLines: maxLines,
+            textInputAction: textInputAction,
             decoration: InputDecoration(
               hintText: hintText,
+              hintStyle: TextStyle(
+                fontFamily: figtreeFontItalic,
+                fontSize: textFieldLabelSize,
+                color: Colors.grey.shade500,
+              ),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(borderRadius),
                 borderSide: BorderSide(color: borderColor),
