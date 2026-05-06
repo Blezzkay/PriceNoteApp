@@ -158,7 +158,7 @@ class MainHomeScreen extends StatelessWidget {
                                   fontSize: 14.sp,
                                   color: textGreyColor,
                                   fontFamily: figtreeFontRegular,
-                                  height: 1.4,
+                                  height: 1.41,
                                 ),
                               ),
                             ],

@@ -299,4 +299,5 @@ class ProductPdfService {
   Future<void> sharePdf(Uint8List bytes, {required String filename}) async {
     await Printing.sharePdf(bytes: bytes, filename: filename);
   }
+
 }
