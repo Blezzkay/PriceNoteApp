@@ -104,6 +104,9 @@ flutter:
     - family: NotoSansRegular
       fonts:
         - asset: assets/fonts/NotoSans-Regular.ttf
+    - family: NotoSansBold
+      fonts:
+        - asset: assets/fonts/NotoSans-Bold.ttf
 
 
   #
