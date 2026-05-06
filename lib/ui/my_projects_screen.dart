@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
-import 'package:quote_rate/constants/colors.dart';
-import 'package:quote_rate/constants/fonts.dart';
+import 'package:price_note/constants/colors.dart';
+import 'package:price_note/constants/fonts.dart';
 
 import '../controllers/my_projects_controller.dart';
 import '../widgets/project_item.dart';

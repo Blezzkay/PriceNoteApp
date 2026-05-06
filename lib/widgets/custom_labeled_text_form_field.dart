@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:quote_rate/constants/fonts.dart';
+import 'package:price_note/constants/fonts.dart';
 
 import '../constants/sizes.dart';
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:quote_rate/constants/fonts.dart';
+import 'package:price_note/constants/fonts.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 import '../constants/colors.dart';
@@ -73,7 +73,9 @@ class PriceHomeScreen extends StatelessWidget {
                       color: textDarkColor,
                     ),
                   ),
-                  Icon(Icons.settings, color: brandColor, size: 22.sp),
+                  SizedBox(width: 2),
+
+                  // Icon(Icons.settings, color: brandColor, size: 22.sp),
                 ],
               ),
               SizedBox(height: 1.h),

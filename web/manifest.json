@@ -1,6 +1,6 @@
 {
-    "name": "quote_rate",
-    "short_name": "quote_rate",
+    "name": "price_note",
+    "short_name": "price_note",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

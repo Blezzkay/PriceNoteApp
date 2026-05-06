@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
-import 'package:quote_rate/constants/fonts.dart';
+import 'package:price_note/constants/fonts.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 import '../constants/colors.dart';

@@ -1,4 +1,4 @@
-# quote_rate
+# price_note
 
 Generate Smart Naira–Dollar Quotes in Seconds.
 

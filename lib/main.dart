@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:quote_rate/ui/main_home_screen.dart';
+import 'package:price_note/ui/main_home_screen.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 import 'app_bindings.dart';

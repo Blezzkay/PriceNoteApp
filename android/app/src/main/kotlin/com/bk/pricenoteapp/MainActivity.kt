@@ -1,4 +1,4 @@
-package com.techmayyhem.quoterate.quote_rate
+package com.bk.pricenoteapp
 
 import io.flutter.embedding.android.FlutterActivity
 

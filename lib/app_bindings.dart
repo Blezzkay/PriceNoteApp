@@ -2,7 +2,7 @@
 // Put controllers & services here so they are available app-wide.
 
 import 'package:get/get.dart';
-import 'package:quote_rate/services/product_pdf_service.dart';
+import 'package:price_note/services/product_pdf_service.dart';
 import 'controllers/conversion_controller.dart';
 import 'controllers/price_controller.dart';
 import 'services/storage_service.dart';

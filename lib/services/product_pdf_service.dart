@@ -17,7 +17,7 @@ class ProductPdfService {
     final medium = pw.Font.ttf(await rootBundle.load('assets/fonts/Figtree-Medium.ttf'));
     final regular = pw.Font.ttf(await rootBundle.load('assets/fonts/Figtree-Regular.ttf'));
     final italic = pw.Font.ttf(await rootBundle.load('assets/fonts/Figtree-Italic.ttf'));
-    final alt = pw.Font.ttf(await rootBundle.load('assets/fonts/NotoSans-Regular.ttf '));
+    final alt = pw.Font.ttf(await rootBundle.load('assets/fonts/NotoSans-Regular.ttf'));
 
     return {
       'bold': bold,
