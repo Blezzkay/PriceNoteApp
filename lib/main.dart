@@ -10,44 +10,54 @@ import 'package:quote_rate/ui/main_home_screen.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 import 'app_bindings.dart';
-import 'routes.dart';
 import 'ui/exchange_screen.dart';
 
+/// The entry point of the application.
+///
+/// This function initializes the Flutter bindings, Hive for local storage,
+/// and sets the system UI overlay style before running the app.
 Future<void> main() async {
+  // Ensure that the Flutter bindings are initialized.
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize Hive local storage
+  // Initialize Hive for local data storage.
   await Hive.initFlutter();
-  // Open a box for app data. Using Map storage for simplicity.
+  // Open a box for app data.
   await Hive.openBox('konvbox');
 
+  // Set the system UI overlay style for the entire app.
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-    statusBarColor: Colors.white, // 👈 set solid color (no transparency)
-    statusBarIconBrightness: Brightness.dark, // 👈 dark icons for light background
+    statusBarColor: Colors.white, // Set status bar color to white.
+    statusBarIconBrightness: Brightness.dark, // Use dark icons for light background.
   ));
 
+  // Run the root widget of the application.
   runApp(const MyApp());
 }
 
+/// The root widget of the application.
 class MyApp extends StatelessWidget {
+  /// Creates a new instance of [MyApp].
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // ResponsiveSizer wraps app for responsive sizing.
+    // Use ResponsiveSizer to make the app responsive to different screen sizes.
     return ResponsiveSizer(
       builder: (context, orientation, screenType) {
+        // Use GetMaterialApp for state management and routing.
         return GetMaterialApp(
-          title: 'Naira2Dollar',
+          title: 'Price Quote',
           debugShowCheckedModeBanner: false,
           initialBinding: AppBindings(),
           // getPages: AppRoutes.pages,
-          // Provide a simple theme
+          // Define the theme for the application.
           theme: ThemeData(
             primaryColor: const Color(0xFF2FCC93),
             colorScheme: ColorScheme.fromSwatch().copyWith(secondary: const Color(0xFF2FCC93)),
             visualDensity: VisualDensity.adaptivePlatformDensity,
           ),
+          // Set the home screen of the application.
           home: const MainHomeScreen(),
         );
       },
