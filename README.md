@@ -1,6 +1,6 @@
 # price_note
 
-Generate Smart Naira–Dollar Quotes in Seconds.
+Generate Smart price Quotes in Seconds.
 
 ## Getting Started
 
