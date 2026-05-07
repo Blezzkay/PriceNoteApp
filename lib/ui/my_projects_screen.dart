@@ -101,8 +101,8 @@ class MyProjectsScreen extends StatelessWidget {
                             controller.editProject(index, project);
                           },
 
-                          onDelete: () {
-                            controller.deleteProject(index);
+                          onDelete: () async {
+                           await controller.deleteProject(index);
                           },
                         ),
                       );

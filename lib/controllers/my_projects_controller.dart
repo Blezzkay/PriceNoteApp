@@ -51,18 +51,21 @@ class ProjectController extends GetxController {
   }
 
   /// Add a new project
-  void addProject(ProjectModel project) {
+  Future<void> addProject(ProjectModel project) async {
     projects.add(project);
+    await saveProjects();
   }
 
   /// Edit a project at index
-  void editProject(int index, ProjectModel updatedProject) {
+  Future<void> editProject(int index, ProjectModel updatedProject) async {
     projects[index] = updatedProject;
+    await saveProjects();
   }
 
   /// Delete a project
-  void deleteProject(int index) {
+  Future<void> deleteProject(int index) async {
     projects.removeAt(index);
+    await saveProjects(); // ← was missing, so deletion was never persisted
   }
 
   /// Create a new project from controller values
