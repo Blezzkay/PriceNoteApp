@@ -10,15 +10,14 @@ import 'package:printing/printing.dart';
 import '../models/product_item.dart';
 
 class ProductPdfService {
-  // ── Brand colors ──────────────────────────────────────────────────────────
-  static const _brand       = PdfColor.fromInt(0xFF4F46E5);
-  static const _brandLight  = PdfColor.fromInt(0xFFEEEDFD);
-  static const _dark        = PdfColor.fromInt(0xFF111827);
-  static const _grey        = PdfColor.fromInt(0xFF6B7280);
-  static const _greyLight   = PdfColor.fromInt(0xFFF3F4F6);
-  static const _divider     = PdfColor.fromInt(0xFFE5E7EB);
-  static const _white       = PdfColors.white;
-  static const _rowAlt      = PdfColor.fromInt(0xFFFAFAFF);
+  // ── Colors ────────────────────────────────────────────────────────────────
+  static const _brand      = PdfColor.fromInt(0xFF3A6B4E);
+  static const _brandLight = PdfColor.fromInt(0xFFE8F5EE);
+  static const _dark       = PdfColor.fromInt(0xFF111827);
+  static const _grey       = PdfColor.fromInt(0xFF6B7280);
+  static const _divider    = PdfColor.fromInt(0xFFE5E7EB);
+  static const _tableHead  = PdfColor.fromInt(0xFF3A6B4E);
+  static const _rowAlt     = PdfColor.fromInt(0xFFF9FAFB);
 
   Future<Map<String, pw.Font>> _loadFonts() async {
     return {
@@ -41,243 +40,159 @@ class ProductPdfService {
     final fonts = await _loadFonts();
     final fmt   = NumberFormat.currency(symbol: currencySymbol, decimalDigits: 0);
     final total = items.fold<int>(0, (s, i) => s + i.amount);
-    final now   = DateFormat('dd MMM yyyy  •  hh:mm a').format(DateTime.now());
+    final now   = DateFormat('MMM d, yyyy').format(DateTime.now());
 
-    // ── Text styles ──────────────────────────────────────────────────────────
-    final sTitle      = pw.TextStyle(font: fonts['bold'],    fontSize: 22, color: _white);
-    final sSubtitle   = pw.TextStyle(font: fonts['regular'], fontSize: 10, color: _white.flatten());
-    final sColHead    = pw.TextStyle(font: fonts['semiBold'],fontSize: 10, color: _grey);
-    final sRowTitle   = pw.TextStyle(font: fonts['medium'],  fontSize: 11, color: _dark);
-    final sRowAmt     = pw.TextStyle(font: fonts['alt'],     fontSize: 11, color: _dark);
-    final sTotalLabel = pw.TextStyle(font: fonts['semiBold'],fontSize: 12, color: _grey);
-    final sTotalAmt   = pw.TextStyle(font: fonts['altBold'], fontSize: 16, color: _brand);
-    final sFooter     = pw.TextStyle(font: fonts['italic'],  fontSize: 9,  color: _grey);
-    final sBadge      = pw.TextStyle(font: fonts['semiBold'],fontSize: 9,  color: _brand);
+    // ── Styles ───────────────────────────────────────────────────────────────
+    final sBrandLabel = pw.TextStyle(font: fonts['semiBold'], fontSize: 9,  color: _brand, letterSpacing: 1.2);
+    final sTitle      = pw.TextStyle(font: fonts['bold'],     fontSize: 26, color: _dark);
+    final sDate       = pw.TextStyle(font: fonts['regular'],  fontSize: 10, color: _grey);
+    final sColHead    = pw.TextStyle(font: fonts['semiBold'], fontSize: 10, color: PdfColors.white);
+    final sRowItem    = pw.TextStyle(font: fonts['regular'],  fontSize: 10, color: _dark);
+    final sRowAmt     = pw.TextStyle(font: fonts['alt'],      fontSize: 10, color: _brand);
+    final sTotalLabel = pw.TextStyle(font: fonts['bold'],     fontSize: 11, color: PdfColors.white, letterSpacing: 1.0);
+    final sTotalAmt   = pw.TextStyle(font: fonts['altBold'],  fontSize: 13, color: PdfColors.white);
+    final sFooter     = pw.TextStyle(font: fonts['italic'],   fontSize: 8,  color: _grey);
 
     pdf.addPage(
       pw.MultiPage(
         pageFormat: PdfPageFormat.a4,
-        margin: pw.EdgeInsets.zero,
+        margin: const pw.EdgeInsets.symmetric(horizontal: 48, vertical: 40),
+        theme: pw.ThemeData.withFont(
+          base:      fonts['regular']!,
+          bold:      fonts['bold']!,
+          italic:    fonts['italic']!,
+          boldItalic: fonts['bold']!,
+        ),
         build: (ctx) => [
 
-          // ── Hero header band ─────────────────────────────────────────────
+          // ── Top bar: PRICENOTE branding ───────────────────────────────────
+          pw.Row(
+            mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+            children: [
+              pw.Row(
+                children: [
+                  pw.Container(width: 3, height: 14, color: _brand),
+                  pw.SizedBox(width: 6),
+                  pw.Text('PRICENOTE', style: sBrandLabel),
+                ],
+              ),
+            ],
+          ),
+
+          pw.SizedBox(height: 20),
+
+          // ── Project title ─────────────────────────────────────────────────
+          pw.Text(title, style: sTitle),
+          pw.SizedBox(height: 6),
+          pw.Text(now, style: sDate),
+
+          pw.SizedBox(height: 6),
+
+          // ── Divider under title ───────────────────────────────────────────
+          pw.Container(height: 1, color: _divider),
+
+          pw.SizedBox(height: 28),
+
+          // ── Table ─────────────────────────────────────────────────────────
+          pw.Table(
+            columnWidths: {
+              0: const pw.FixedColumnWidth(28),   // #
+              1: const pw.FlexColumnWidth(6),     // Item
+              2: const pw.FlexColumnWidth(3),     // Amount
+            },
+            children: [
+
+              // Header row
+              pw.TableRow(
+                decoration: const pw.BoxDecoration(color: _tableHead),
+                children: [
+                  _cell('#',      sColHead, pw.TextAlign.center, top: 10, bottom: 10, left: 12, right: 6),
+                  _cell('Item',   sColHead, pw.TextAlign.left,   top: 10, bottom: 10, left: 8,  right: 8),
+                  _cell('Total',  sColHead, pw.TextAlign.right,  top: 10, bottom: 10, left: 8,  right: 12),
+                ],
+              ),
+
+              // Data rows
+              ...List.generate(items.length, (i) {
+                final item     = items[i];
+                final rowColor = i.isEven ? PdfColors.white : _rowAlt;
+                final isLast   = i == items.length - 1;
+
+                return pw.TableRow(
+                  decoration: pw.BoxDecoration(
+                    color: rowColor,
+                    border: pw.Border(
+                      bottom: pw.BorderSide(
+                        color: isLast ? _divider : _divider,
+                        width: 0.5,
+                      ),
+                    ),
+                  ),
+                  children: [
+                    _cell('${i + 1}', sRowItem.copyWith(color: _grey), pw.TextAlign.center, top: 11, bottom: 11, left: 12, right: 6),
+                    _cell(item.title, sRowItem, pw.TextAlign.left,   top: 11, bottom: 11, left: 8,  right: 8),
+                    _cell(fmt.format(item.amount), sRowAmt, pw.TextAlign.right, top: 11, bottom: 11, left: 8, right: 12),
+                  ],
+                );
+              }),
+            ],
+          ),
+
+          pw.SizedBox(height: 0),
+
+          // ── Total bar ─────────────────────────────────────────────────────
           pw.Container(
-            width: double.infinity,
-            padding: const pw.EdgeInsets.fromLTRB(32, 36, 32, 30),
-            decoration: const pw.BoxDecoration(color: _brand),
-            child: pw.Column(
-              crossAxisAlignment: pw.CrossAxisAlignment.start,
+            color: _brand,
+            padding: const pw.EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+            child: pw.Row(
+              mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
               children: [
-                pw.Row(
-                  mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: pw.CrossAxisAlignment.start,
-                  children: [
-                    pw.Expanded(
-                      child: pw.Text(title, style: sTitle),
-                    ),
-                    pw.Container(
-                      padding: const pw.EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                      decoration: pw.BoxDecoration(
-                        color: _white.flatten(),
-                        borderRadius: pw.BorderRadius.circular(20),
-                      ),
-                      child: pw.Text(
-                        '${items.length} item${items.length == 1 ? '' : 's'}',
-                        style: sBadge,
-                      ),
-                    ),
-                  ],
-                ),
-
-                pw.SizedBox(height: 8),
-
-                pw.Row(
-                  children: [
-                    pw.Text('Generated  $now', style: sSubtitle),
-                  ],
-                ),
-
-                pw.SizedBox(height: 20),
-
-                pw.Container(
-                  padding: const pw.EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                  decoration: pw.BoxDecoration(
-                    color: PdfColor.fromInt(0x33FFFFFF),
-                    borderRadius: pw.BorderRadius.circular(10),
-                  ),
-                  child: pw.Row(
-                    mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                    children: [
-                      pw.Text(
-                        'Total Value',
-                        style: pw.TextStyle(font: fonts['medium'], fontSize: 11, color: _white.flatten()),
-                      ),
-                      pw.Text(
-                        fmt.format(total),
-                        style: pw.TextStyle(font: fonts['altBold'], fontSize: 15, color: _white),
-                      ),
-                    ],
-                  ),
-                ),
+                pw.Text('TOTAL', style: sTotalLabel),
+                pw.Text(fmt.format(total), style: sTotalAmt),
               ],
             ),
           ),
 
-          // ── Body padding wrapper ─────────────────────────────────────────
-          pw.Padding(
-            padding: const pw.EdgeInsets.fromLTRB(32, 28, 32, 0),
-            child: pw.Column(
-              crossAxisAlignment: pw.CrossAxisAlignment.start,
-              children: [
-
-                pw.Text(
-                  'PRICE BREAKDOWN',
-                  style: pw.TextStyle(
-                    font: fonts['semiBold'],
-                    fontSize: 9,
-                    color: _brand,
-                    letterSpacing: 1.4,
-                  ),
-                ),
-                pw.SizedBox(height: 10),
-
-                // ── Table ──────────────────────────────────────────────────
-                pw.Container(
-                  decoration: pw.BoxDecoration(
-                    border: pw.Border.all(color: _divider, width: 1),
-                    borderRadius: pw.BorderRadius.circular(10),
-                  ),
-                  child: pw.ClipRRect(
-                    horizontalRadius: 10,
-                    verticalRadius: 10,
-                    child: pw.Column(
-                      children: [
-
-                        // Column headers
-                        pw.Container(
-                          color: _greyLight,
-                          padding: const pw.EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                          child: pw.Row(
-                            children: [
-                              pw.Expanded(flex: 1, child: pw.Text('#', style: sColHead)),
-                              pw.Expanded(flex: 6, child: pw.Text('Product', style: sColHead)),
-                              pw.Expanded(
-                                flex: 3,
-                                child: pw.Text('Amount', style: sColHead, textAlign: pw.TextAlign.right),
-                              ),
-                            ],
-                          ),
-                        ),
-
-                        // ── FIX: color moved inside BoxDecoration ──────────
-                        ...List.generate(items.length, (i) {
-                          final item     = items[i];
-                          final isLast   = i == items.length - 1;
-                          final rowColor = i.isEven ? _white : _rowAlt;
-
-                          return pw.Container(
-                            padding: const pw.EdgeInsets.symmetric(horizontal: 16, vertical: 11),
-                            decoration: pw.BoxDecoration(
-                              color: rowColor,
-                              border: isLast
-                                  ? null
-                                  : pw.Border(
-                                bottom: pw.BorderSide(color: _divider, width: 0.5),
-                              ),
-                            ),
-                            child: pw.Row(
-                              children: [
-                                pw.Expanded(
-                                  flex: 1,
-                                  child: pw.Text(
-                                    '${i + 1}',
-                                    style: pw.TextStyle(
-                                      font: fonts['regular'],
-                                      fontSize: 10,
-                                      color: _grey,
-                                    ),
-                                  ),
-                                ),
-                                pw.Expanded(
-                                  flex: 6,
-                                  child: pw.Text(item.title, style: sRowTitle),
-                                ),
-                                pw.Expanded(
-                                  flex: 3,
-                                  child: pw.Text(
-                                    fmt.format(item.amount),
-                                    style: sRowAmt,
-                                    textAlign: pw.TextAlign.right,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-                        }),
-                      ],
-                    ),
-                  ),
-                ),
-
-                pw.SizedBox(height: 20),
-
-                // ── Total row ──────────────────────────────────────────────
-                pw.Container(
-                  padding: const pw.EdgeInsets.symmetric(horizontal: 20, vertical: 14),
-                  decoration: pw.BoxDecoration(
-                    color: _brandLight,
-                    borderRadius: pw.BorderRadius.circular(10),
-                  ),
-                  child: pw.Row(
-                    mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                    children: [
-                      pw.Column(
-                        crossAxisAlignment: pw.CrossAxisAlignment.start,
-                        children: [
-                          pw.Text('Grand Total', style: sTotalLabel),
-                          pw.SizedBox(height: 2),
-                          pw.Text(
-                            '${items.length} product${items.length == 1 ? '' : 's'} combined',
-                            style: pw.TextStyle(
-                              font: fonts['regular'],
-                              fontSize: 9,
-                              color: _grey,
-                            ),
-                          ),
-                        ],
-                      ),
-                      pw.Text(fmt.format(total), style: sTotalAmt),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          pw.Spacer(),
-
-          // ── Footer ────────────────────────────────────────────────────────
-          pw.Padding(
-            padding: const pw.EdgeInsets.fromLTRB(32, 0, 32, 24),
-            child: pw.Column(
-              children: [
-                pw.Divider(color: _divider, thickness: 0.8),
-                pw.SizedBox(height: 6),
-                pw.Row(
-                  mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                  children: [
-                    pw.Text('Generated by Price Note', style: sFooter),
-                    pw.Text(now, style: sFooter),
-                  ],
-                ),
-              ],
-            ),
-          ),
+          pw.SizedBox(height: 32),
         ],
+
+        // ── Footer on every page ─────────────────────────────────────────────
+        footer: (ctx) => pw.Column(
+          children: [
+            pw.Divider(color: _divider, thickness: 0.5),
+            pw.SizedBox(height: 4),
+            pw.Row(
+              mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+              children: [
+                pw.Text('Generated by Price Note', style: sFooter),
+                pw.Text(
+                  'Page ${ctx.pageNumber} of ${ctx.pagesCount}',
+                  style: sFooter,
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
 
     return pdf.save();
+  }
+
+  // ── Helper: table cell ────────────────────────────────────────────────────
+  static pw.Widget _cell(
+      String text,
+      pw.TextStyle style,
+      pw.TextAlign align, {
+        double top    = 8,
+        double bottom = 8,
+        double left   = 8,
+        double right  = 8,
+      }) {
+    return pw.Padding(
+      padding: pw.EdgeInsets.fromLTRB(left, top, right, bottom),
+      child: pw.Text(text, style: style, textAlign: align),
+    );
   }
 
   Future<String> generateAndSavePdf({
@@ -299,5 +214,4 @@ class ProductPdfService {
   Future<void> sharePdf(Uint8List bytes, {required String filename}) async {
     await Printing.sharePdf(bytes: bytes, filename: filename);
   }
-
 }
